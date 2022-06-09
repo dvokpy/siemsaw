@@ -134,10 +134,10 @@ while True:
             if default_answer[0].lower() == 'y':
                 for evtx_path in evtx_main_paths:
                     if plat == 'Linux':
-                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('/')[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
                     else:
-                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('\\')[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
             elif default_answer[0].lower() == 'n':
                 sigma_rules = []
