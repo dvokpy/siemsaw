@@ -19,17 +19,17 @@ def config_generator(platform):
             else:
                 chainsaw_bin = input("Enter chainsaw binary absolute path:\n> ")
                 config_dscr = open(config_path, 'w')
-                config_dscr.write('Platform:' + platform + "\n")
-                config_dscr.write('ChainsawBin:' + chainsaw_bin + "\n")
+                config_dscr.write('Platform;' + platform + "\n")
+                config_dscr.write('ChainsawBin;' + chainsaw_bin + "\n")
                 output_dir = os.getcwd() + '\output_dir\\'
-                config_dscr.write('OutputDir:' + output_dir + "\n")
-                mapping_file = ('/'.join((chainsaw_bin.split('\\'))[:-1])) + '\mapping_files\sigma-mapping.yml'
-                config_dscr.write('MappingFile:' + mapping_file + "\n")
+                config_dscr.write('OutputDir;' + output_dir + "\n")
+                mapping_file = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\mapping_files\sigma-mapping.yml'
+                config_dscr.write('MappingFile;' + mapping_file + "\n")
                 default_sigma_rules = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\sigma_rules\\'
-                config_dscr.write('DefaultSigmaDirectory:' + default_sigma_rules + "\n")
+                config_dscr.write('DefaultSigmaDirectory;' + default_sigma_rules + "\n")
                 os.mkdir(os.getcwd() + '\output_dir\\')
                 evtx_repo = os.getcwd() + '\evtx_repo\\'
-                config_dscr.write('EvtxRepo:' + evtx_repo + '\n')
+                config_dscr.write('EvtxRepo;' + evtx_repo + '\n')
                 os.mkdir(evtx_repo)
                 config_dscr.close()
                 return config_path
@@ -43,17 +43,17 @@ def config_generator(platform):
             else:
                 chainsaw_bin = input("Enter chainsaw binary absolute path:\n> ")
                 config_dscr = open(config_path, 'w')
-                config_dscr.write('Platform:' + platform + "\n")
-                config_dscr.write('ChainsawBin:' + chainsaw_bin + "\n")
+                config_dscr.write('Platform;' + platform + "\n")
+                config_dscr.write('ChainsawBin;' + chainsaw_bin + "\n")
                 output_dir = os.getcwd() + '/output_dir/'
-                config_dscr.write('OutputDir:' + output_dir + "\n")
+                config_dscr.write('OutputDir;' + output_dir + "\n")
                 mapping_file = ('/'.join((chainsaw_bin.split('/'))[:-1])) + '/mapping_files/sigma-mapping.yml'
-                config_dscr.write('MappingFile:' + mapping_file + "\n")
+                config_dscr.write('MappingFile;' + mapping_file + "\n")
                 default_sigma_rules = ('/'.join((chainsaw_bin.split('/'))[:-1])) + '/sigma_rules/'
-                config_dscr.write('DefaultSigmaDirectory:' + default_sigma_rules + "\n")
+                config_dscr.write('DefaultSigmaDirectory;' + default_sigma_rules + "\n")
                 os.mkdir(os.getcwd() + '/output_dir/')
                 evtx_repo = os.getcwd() + '/evtx_repo/'
-                config_dscr.write('EvtxRepo:' + evtx_repo + '\n')
+                config_dscr.write('EvtxRepo;' + evtx_repo + '\n')
                 os.mkdir(evtx_repo)
                 config_dscr.close()
                 return config_path
