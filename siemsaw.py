@@ -96,6 +96,7 @@ def evtx_builder():
 
 
 saw_bin, output_dir, map_dir, sigma_dir, evtx_directory = config_var_assign(config_path)
+
 while True:
     evtx_answer = input("Manually load evtx files? Y/N\n> ")
     if evtx_answer[0].lower() == 'y':
@@ -113,7 +114,16 @@ while True:
 print("The current loaded evtx files are:\n")
 for path in evtx_main_paths:
     print(path + "\n")
-
+    
+def output_cleaner(out_dir):
+    files = os.listdir(out_dir)
+    for file in files:
+        wrking_filepth = out_dir + file
+        file_dr = open(wrking_filepth, 'r')
+        content = file_dr.read()
+        if not content:
+            file_dr.close()
+            os.remove(wrking_filepth)
 while True:
     try:
         print(menu)
@@ -124,10 +134,10 @@ while True:
             if default_answer[0].lower() == 'y':
                 for evtx_path in evtx_main_paths:
                     if plat == 'Linux':
-                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path], stdout=subprocess.PIPE, text=True)
+                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
                     else:
-                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path], stdout=subprocess.PIPE, text=True)
+                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
             elif default_answer[0].lower() == 'n':
                 sigma_rules = []
@@ -177,6 +187,7 @@ while True:
             exit()
         else:
             print('Invalid menu option\n')
+        output_cleaner(output_dir)
     except KeyboardInterrupt:
         print("User entered keyboard interrupt.\nExiting...\n")
         exit()
