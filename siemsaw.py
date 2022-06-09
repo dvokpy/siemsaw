@@ -60,9 +60,10 @@ def linux_config_generator():
         
 menu = '1)Chainsaw Hunt\n2)Chainsaw Search\n3)General Chainsaw Man Page\n4)Exit siemsaw\n'
 
-if platform.system() == 'Linux':
+plat = platform.system()
+if plat == 'Linux':
     config_path = linux_config_generator()
-elif platform.system() == 'Windows':
+elif plat == 'Windows':
     config_path = windows_config_generator()
 else:
     print('ALERT!!!Unrecognized platform!!!ALERT\n')
@@ -122,8 +123,12 @@ while True:
             default_answer = input("Would you like to use the default sigma rules? Y/N\n> ")
             if default_answer[0].lower() == 'y':
                 for evtx_path in evtx_main_paths:
-                    chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path], stdout=subprocess.PIPE, text=True)
-                    print(chainsaw_hunt.stdout)
+                    if plat == 'Linux':
+                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path], stdout=subprocess.PIPE, text=True)
+                        print(chainsaw_hunt.stdout)
+                    else:
+                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path], stdout=subprocess.PIPE, text=True)
+                        print(chainsaw_hunt.stdout)
             elif default_answer[0].lower() == 'n':
                 sigma_rules = []
                 while True:
@@ -139,8 +144,12 @@ while True:
                 print("Begining Custom Sigma Rule Search...\n")
                 for evtx_path in evtx_main_paths:
                     for rule in sigma_rules:
-                        custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
-                        print(custom_chainsaw_hunt.stdout)
+                        if plat == 'Linux':
+                            custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                            print(custom_chainsaw_hunt.stdout)
+                        else:
+                            custom_chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                            print(custom_chainsaw_hunt.stdout)
         elif user_choice == '2':
             print("*********************\n*Gonna Search it all*\n*********************\n")
             print("Output will be saved in the output directory with the following scheme: search_<evtx><regex>\n")
@@ -149,13 +158,19 @@ while True:
                     query = input("Input your regex query below:\n> ")
                     for evtx_path in evtx_main_paths:
                         cntr = 1
-                        chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                        if plat == 'Linux':
+                            chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                        else:
+                            chainsaw_search = subprocess.run(['python3', saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
                         cntr += 1
                 except KeyboardInterrupt:
                     break
         elif user_choice == '3':
             print("Displaying general chainsaw man page\n")
-            man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+            if plat == 'Linux':
+                man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+            else:
+                man_page = subprocess.run(['python3', saw_bin], stdout=subprocess.PIPE, text=True)
             print("\n" + man_page.stdout + "\n")
         elif user_choice == '4':
             print("Exiting...\n")
