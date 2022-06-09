@@ -67,12 +67,12 @@ def config_generator(platform):
 def config_var_assign(conf_path):
     file_dsc = open(conf_path, 'r')
     conf_content = file_dsc.readlines()
-    operating_system = ((conf_content[0].split(':'))[1])[:-1]
-    chainsaw_binary = ((conf_content[1].split(':'))[1])[:-1]
-    output_directory = ((conf_content[2].split(':'))[1])[:-1]
-    mapping_directory = ((conf_content[3].split(':'))[1])[:-1]
-    sigma_directory = ((conf_content[4].split(':'))[1])[:-1]
-    evtx_dir = ((conf_content[5].split(':'))[1])[:-1]
+    operating_system = ((conf_content[0].split(';'))[1])[:-1]
+    chainsaw_binary = ((conf_content[1].split(';'))[1])[:-1]
+    output_directory = ((conf_content[2].split(';'))[1])[:-1]
+    mapping_directory = ((conf_content[3].split(';'))[1])[:-1]
+    sigma_directory = ((conf_content[4].split(';'))[1])[:-1]
+    evtx_dir = ((conf_content[5].split(';'))[1])[:-1]
     return operating_system, chainsaw_binary, output_directory, mapping_directory, sigma_directory, evtx_dir
 
 #Gathers evtx paths
