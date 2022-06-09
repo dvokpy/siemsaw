@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from operator import contains
 import os
 import platform
 import subprocess
@@ -11,7 +12,7 @@ def os_detector():
 
 #Builds the windows config file
 def config_generator(platform):
-    if platform == 'Windows':
+    if 'win' in platform:
         config_path = os.getcwd() + '\config'
         try:
             if os.path.exists(config_path) and os.path.exists(os.getcwd() + '\output_dir\\'):
