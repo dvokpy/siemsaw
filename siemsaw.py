@@ -119,11 +119,20 @@ def output_cleaner(out_dir):
     files = os.listdir(out_dir)
     for file in files:
         wrking_filepth = out_dir + file
-        file_dr = open(wrking_filepth, 'r')
-        content = file_dr.read()
-        if not content:
-            file_dr.close()
-            os.remove(wrking_filepth)
+        try:
+            if os.path.isdir(wrking_filepth):
+                list = os.listdir(wrking_filepth)
+                if list:
+                    continue
+                else:
+                    os.rmdir(wrking_filepth)
+            file_dr = open(wrking_filepth, 'r')
+            content = file_dr.read()
+            if not content:
+                file_dr.close()
+                os.remove(wrking_filepth)
+        except FileNotFoundError:
+            continue
 while True:
     try:
         print(menu)
