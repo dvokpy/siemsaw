@@ -1,6 +1,6 @@
 # Siemsaw
 ***
-Written solely in Python, Siemsaw is a tool designed to mass query evtx logs with using chainsaw.
+Written solely in Python, Siemsaw is a tool designed to mass query evtx log using chainsaw.
 
 ## General Info
 ***
