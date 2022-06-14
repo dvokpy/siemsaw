@@ -13,23 +13,23 @@ def os_detector():
 #Builds the windows config file
 def config_generator(platform):
     if 'win' in platform:
-        config_path = os.getcwd() + '\config'
+        config_path = os.getcwd() + '\\config'
         try:
-            if os.path.exists(config_path) and os.path.exists(os.getcwd() + '\output_dir\\'):
+            if os.path.exists(config_path) and os.path.exists(os.getcwd() + '\\output_dir\\'):
                 return config_path
             else:
                 chainsaw_bin = input("Enter chainsaw binary absolute path:\n> ")
                 config_dscr = open(config_path, 'w')
                 config_dscr.write('Platform;' + platform + "\n")
                 config_dscr.write('ChainsawBin;' + chainsaw_bin + "\n")
-                output_dir = os.getcwd() + '\output_dir\\'
+                output_dir = os.getcwd() + '\\output_dir\\'
                 config_dscr.write('OutputDir;' + output_dir + "\n")
-                mapping_file = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\mapping_files\sigma-mapping.yml'
+                mapping_file = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\\mapping_files\\sigma-mapping.yml'
                 config_dscr.write('MappingFile;' + mapping_file + "\n")
-                default_sigma_rules = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\sigma_rules\\'
+                default_sigma_rules = ('\\'.join((chainsaw_bin.split('\\'))[:-1])) + '\\sigma_rules\\'
                 config_dscr.write('DefaultSigmaDirectory;' + default_sigma_rules + "\n")
-                os.mkdir(os.getcwd() + '\output_dir\\')
-                evtx_repo = os.getcwd() + '\evtx_repo\\'
+                os.mkdir(os.getcwd() + '\\output_dir\\')
+                evtx_repo = os.getcwd() + '\\evtx_repo\\'
                 config_dscr.write('EvtxRepo;' + evtx_repo + '\n')
                 os.mkdir(evtx_repo)
                 config_dscr.close()
@@ -145,9 +145,11 @@ while True:
                     if operating_system == 'Linux':
                         chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('/')[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
-                    else:
-                        chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('\\')[-1]], stdout=subprocess.PIPE, text=True)
+                    elif operating_system == 'Windows':
+                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('\\')[-1]], stdout=subprocess.PIPE, text=True)
                         print(chainsaw_hunt.stdout)
+                    else:
+                        print("Unknown operating system detected\n")
             elif default_answer[0].lower() == 'n':
                 sigma_rules = []
                 while True:
@@ -166,9 +168,11 @@ while True:
                         if operating_system == 'Linux':
                             custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
                             print(custom_chainsaw_hunt.stdout)
-                        else:
-                            custom_chainsaw_hunt = subprocess.run(['python3', saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                        elif operating_system == 'Windows':
+                            custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('\\'))[-1]], stdout=subprocess.PIPE, text=True)
                             print(custom_chainsaw_hunt.stdout)
+                        else:
+                            print("Unknown operating system detected\n")
         elif user_choice == '2':
             print("*********************\n*Gonna Search it all*\n*********************\n")
             print("Output will be saved in the output directory with the following scheme: search_<evtx><regex>\n")
@@ -176,20 +180,22 @@ while True:
                 try:
                     query = input("Input your regex query below:\n> ")
                     for evtx_path in evtx_main_paths:
-                        cntr = 1
                         if operating_system == 'Linux':
                             chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                        elif operating_system == 'Windows':
+                            chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('\\'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
                         else:
-                            chainsaw_search = subprocess.run(['python3', saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
-                        cntr += 1
+                            print("Unknown operating system detected\n")
                 except KeyboardInterrupt:
                     break
         elif user_choice == '3':
             print("Displaying general chainsaw man page\n")
             if operating_system == 'Linux':
                 man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+            elif operating_system == 'Windows':
+                man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
             else:
-                man_page = subprocess.run(['python3', saw_bin], stdout=subprocess.PIPE, text=True)
+                print("Unknown operating system detected\n")
             print("\n" + man_page.stdout + "\n")
         elif user_choice == '4':
             print("Exiting...\n")
