@@ -124,84 +124,88 @@ def output_cleaner(out_dir):
         
 
 #Main loop
-config_path = config_generator(os_detector())
+def main():
+    config_path = config_generator(os_detector())
 
-operating_system, saw_bin, output_dir, map_dir, sigma_dir, evtx_directory = config_var_assign(config_path)
+    operating_system, saw_bin, output_dir, map_dir, sigma_dir, evtx_directory = config_var_assign(config_path)
 
-evtx_main_paths = evtx_builder(evtx_directory)
+    evtx_main_paths = evtx_builder(evtx_directory)
 
-menu = '1)Chainsaw Hunt\n2)Chainsaw Search\n3)General Chainsaw Man Page\n4)Exit siemsaw\n'
+    menu = '1)Chainsaw Hunt\n2)Chainsaw Search\n3)General Chainsaw Man Page\n4)Exit siemsaw\n'
 
-while True:
-    try:
-        print(menu)
-        user_choice = input('Enter your choice:\n> ')[0]
-        if user_choice == '1':
-            print("***************\n* TO THE HUNT *\n***************\n")
-            default_answer = input("Would you like to use the default sigma rules? Y/N\n> ")
-            if default_answer[0].lower() == 'y':
-                for evtx_path in evtx_main_paths:
-                    if operating_system == 'Linux':
-                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('/')[-1]], stdout=subprocess.PIPE, text=True)
-                        print(chainsaw_hunt.stdout)
-                    elif operating_system == 'Windows':
-                        chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('\\')[-1]], stdout=subprocess.PIPE, text=True)
-                        print(chainsaw_hunt.stdout)
-                    else:
-                        print("Unknown operating system detected\n")
-            elif default_answer[0].lower() == 'n':
-                sigma_rules = []
-                while True:
-                    rule = input("Enter your sigma rule directory in (absolute path):\n> ")
-                    sigma_rules.append(rule)
-                    answer = input("Add more sigma rules? Y/N\n> ")
-                    if answer[0].lower() == 'y':
-                        continue
-                    elif answer[0].lower() == 'n':
-                        break
-                    else:
-                        print("Invalid choice\n")
-                print("Begining Custom Sigma Rule Search...\n")
-                for evtx_path in evtx_main_paths:
-                    for rule in sigma_rules:
-                        if operating_system == 'Linux':
-                            custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
-                            print(custom_chainsaw_hunt.stdout)
-                        elif operating_system == 'Windows':
-                            custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('\\'))[-1]], stdout=subprocess.PIPE, text=True)
-                            print(custom_chainsaw_hunt.stdout)
-                        else:
-                            print("Unknown operating system detected\n")
-        elif user_choice == '2':
-            print("*********************\n*Gonna Search it all*\n*********************\n")
-            print("Output will be saved in the output directory with the following scheme: search_<evtx><regex>\n")
-            while True:
-                try:
-                    query = input("Input your regex query below:\n> ")
+    while True:
+        try:
+            print(menu)
+            user_choice = input('Enter your choice:\n> ')[0]
+            if user_choice == '1':
+                print("***************\n* TO THE HUNT *\n***************\n")
+                default_answer = input("Would you like to use the default sigma rules? Y/N\n> ")
+                if default_answer[0].lower() == 'y':
                     for evtx_path in evtx_main_paths:
                         if operating_system == 'Linux':
-                            chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                            chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('/')[-1]], stdout=subprocess.PIPE, text=True)
+                            print(chainsaw_hunt.stdout)
                         elif operating_system == 'Windows':
-                            chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('\\'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                            chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', sigma_dir, '--csv', output_dir + 'hunt_' + evtx_path.split('\\')[-1]], stdout=subprocess.PIPE, text=True)
+                            print(chainsaw_hunt.stdout)
                         else:
                             print("Unknown operating system detected\n")
-                except KeyboardInterrupt:
-                    break
-        elif user_choice == '3':
-            print("Displaying general chainsaw man page\n")
-            if operating_system == 'Linux':
-                man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
-            elif operating_system == 'Windows':
-                man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+                elif default_answer[0].lower() == 'n':
+                    sigma_rules = []
+                    while True:
+                        rule = input("Enter your sigma rule directory in (absolute path):\n> ")
+                        sigma_rules.append(rule)
+                        answer = input("Add more sigma rules? Y/N\n> ")
+                        if answer[0].lower() == 'y':
+                            continue
+                        elif answer[0].lower() == 'n':
+                            break
+                        else:
+                            print("Invalid choice\n")
+                    print("Begining Custom Sigma Rule Search...\n")
+                    for evtx_path in evtx_main_paths:
+                        for rule in sigma_rules:
+                            if operating_system == 'Linux':
+                                custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('/'))[-1]], stdout=subprocess.PIPE, text=True)
+                                print(custom_chainsaw_hunt.stdout)
+                            elif operating_system == 'Windows':
+                                custom_chainsaw_hunt = subprocess.run([saw_bin, 'hunt', evtx_path, '--mapping', map_dir, '--rules', rule, '--csv', output_dir + 'hunt_' + evtx_path + (rule.split('\\'))[-1]], stdout=subprocess.PIPE, text=True)
+                                print(custom_chainsaw_hunt.stdout)
+                            else:
+                                print("Unknown operating system detected\n")
+            elif user_choice == '2':
+                print("*********************\n*Gonna Search it all*\n*********************\n")
+                print("Output will be saved in the output directory with the following scheme: search_<evtx><regex>\n")
+                while True:
+                    try:
+                        query = input("Input your regex query below:\n> ")
+                        for evtx_path in evtx_main_paths:
+                            if operating_system == 'Linux':
+                                chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('/'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                            elif operating_system == 'Windows':
+                                chainsaw_search = subprocess.run([saw_bin, 'search', evtx_path, '-r', query, '--output', output_dir + 'search_' + (evtx_path.split('\\'))[-1] + '_' + query], stdout=subprocess.PIPE, text=True)
+                            else:
+                                print("Unknown operating system detected\n")
+                    except KeyboardInterrupt:
+                        break
+            elif user_choice == '3':
+                print("Displaying general chainsaw man page\n")
+                if operating_system == 'Linux':
+                    man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+                elif operating_system == 'Windows':
+                    man_page = subprocess.run([saw_bin], stdout=subprocess.PIPE, text=True)
+                else:
+                    print("Unknown operating system detected\n")
+                print("\n" + man_page.stdout + "\n")
+            elif user_choice == '4':
+                print("Exiting...\n")
+                exit()
             else:
-                print("Unknown operating system detected\n")
-            print("\n" + man_page.stdout + "\n")
-        elif user_choice == '4':
-            print("Exiting...\n")
+                print('Invalid menu option\n')
+            output_cleaner(output_dir)
+        except KeyboardInterrupt:
+            print("User entered keyboard interrupt.\nExiting...\n")
             exit()
-        else:
-            print('Invalid menu option\n')
-        output_cleaner(output_dir)
-    except KeyboardInterrupt:
-        print("User entered keyboard interrupt.\nExiting...\n")
-        exit()
+            
+if __name__ ==" __main__":
+    main()
